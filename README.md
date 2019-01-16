@@ -56,4 +56,16 @@ I/flutter ( 3068): package:example/presenter/login_presenter.dart 19:12       Lo
 I/flutter ( 3068): package:example/ui/login_page.dart 135:31                  _LoginPageState.buildBody.<fn>
 ```
 
-### How to use
+### Example
+
+```
+import 'package:flutter_stack_trace/flutter_stack_trace.dart';
+
+//default simple mode
+void main() => FlutterChain.capture(
+      () {
+        runApp(MyApp());
+      },
+    );
+
+```
