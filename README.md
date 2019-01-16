@@ -1,5 +1,7 @@
 # flutter_stack_trace
 
+[![pub package](https://img.shields.io/pub/v/flutter_stack_trace.svg)](https://pub.dartlang.org/packages/flutter_stack_trace)
+
 [stack_trace](https://github.com/dart-lang/stack_trace) for flutter
 
 ### Before
