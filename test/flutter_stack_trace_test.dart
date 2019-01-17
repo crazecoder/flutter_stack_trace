@@ -6,8 +6,8 @@ void main() {
   test('adds one to input values', () {
     FlutterChain.capture(() {
       scheduleAsync();
-    });
-  });
+    },debug: isInDebugMode);
+  },);
 }
 void scheduleAsync() {
   new Future.delayed(new Duration(seconds: 1))
