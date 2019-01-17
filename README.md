@@ -60,7 +60,7 @@ I/flutter ( 3068): package:example/ui/login_page.dart 135:31                  _L
 
 ### Example
 
-```
+```dart
 import 'package:flutter_stack_trace/flutter_stack_trace.dart';
 
 //default simple mode
