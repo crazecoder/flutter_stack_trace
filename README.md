@@ -70,4 +70,8 @@ void main() => FlutterChain.capture(
       },
     );
 
+//just print in debug mode
+//isShowTime default true
+FlutterChain.print("test",isShowTime: false);
+
 ```

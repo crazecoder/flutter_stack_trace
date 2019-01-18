@@ -42,7 +42,7 @@ class MyHomePage extends StatelessWidget {
   }
 
   _click() {
-    FlutterChain.print("test");
+    FlutterChain.print("test", isShowTime: false);
     _scheduleAsync();
   }
 

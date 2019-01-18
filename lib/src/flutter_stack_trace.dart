@@ -1,6 +1,5 @@
 import 'package:flutter/foundation.dart';
 import 'package:stack_trace/stack_trace.dart';
-import 'package:quiver/time.dart';
 import 'dart:async';
 
 class FlutterChain {
@@ -53,7 +52,7 @@ class FlutterChain {
 
   static void print(Object obj, {bool isShowTime = true}) {
     if (isInDebugMode) {
-      debugPrint(isShowTime ? "${systemTime()}:  ${obj.toString()}" : "${obj
+      debugPrint(isShowTime ? "${DateTime.now()}:  ${obj.toString()}" : "${obj
           .toString()}");
     }
   }
