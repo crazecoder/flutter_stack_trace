@@ -50,6 +50,7 @@ class FlutterChain {
     return result;
   }
 }
+
 bool get isInDebugMode {
   bool inDebugMode = false;
   assert(inDebugMode = true);
