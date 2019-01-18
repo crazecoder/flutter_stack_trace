@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_stack_trace/flutter_stack_trace.dart';
 
-void main() => runApp(MyApp());
+void main() => FlutterChain.capture(
+      () {
+        runApp(MyApp());
+      },
+    );
 
 class MyApp extends StatelessWidget {
   @override
@@ -36,14 +40,13 @@ class MyHomePage extends StatelessWidget {
       ),
     );
   }
-  _click(){
-    FlutterChain.capture(() {
-      _scheduleAsync();
-    },debug: isInDebugMode);
+
+  _click() {
+    _scheduleAsync();
   }
+
   void _scheduleAsync() {
-    new Future.delayed(new Duration(seconds: 1))
-        .then((_) => _runAsync());
+    new Future.delayed(new Duration(seconds: 1)).then((_) => _runAsync());
   }
 
   void _runAsync() {
