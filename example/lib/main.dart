@@ -42,6 +42,7 @@ class MyHomePage extends StatelessWidget {
   }
 
   _click() {
+    FlutterChain.print("test");
     _scheduleAsync();
   }
 
