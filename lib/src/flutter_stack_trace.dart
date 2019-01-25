@@ -8,7 +8,6 @@ class FlutterChain {
   static void capture<T>(
     T callback(), {
     void onError(error, Chain chain),
-    bool debug = true,
     bool simple = true,
   }) {
     runZoned(
@@ -19,18 +18,20 @@ class FlutterChain {
         callback();
       },
       onError: (_error, _stack) {
-        if (debug) {
-          debugPrint(_error.toString());
-          String errorStr = "";
-          if (simple) {
-            errorStr = _parseFlutterStack(Trace.from(_stack));
-          } else {
-            errorStr = Trace.from(_stack).toString();
-          }
-          if (errorStr.isNotEmpty) debugPrint(errorStr);
-        }
+        assert(_printError(_error, _stack, simple));
       },
     );
+  }
+
+  static _printError(_error, _stack, bool simple) {
+    debugPrint(_error.toString());
+    String errorStr = "";
+    if (simple) {
+      errorStr = _parseFlutterStack(Trace.from(_stack));
+    } else {
+      errorStr = Trace.from(_stack).toString();
+    }
+    if (errorStr.isNotEmpty) debugPrint(errorStr);
   }
 
   static String _parseFlutterStack(Trace _trace) {
@@ -51,15 +52,8 @@ class FlutterChain {
   }
 
   static void print(Object obj, {bool isShowTime = true}) {
-    if (isInDebugMode) {
-      debugPrint(isShowTime ? "${DateTime.now()}:  ${obj.toString()}" : "${obj
-          .toString()}");
-    }
+    assert(debugPrint(isShowTime
+        ? "${DateTime.now()}:  ${obj.toString()}"
+        : "${obj.toString()}"));
   }
-}
-
-bool get isInDebugMode {
-  bool inDebugMode = false;
-  assert(inDebugMode = true);
-  return inDebugMode;
 }
