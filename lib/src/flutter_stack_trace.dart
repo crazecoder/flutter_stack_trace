@@ -5,13 +5,12 @@ import 'dart:async';
 class FlutterChain {
   FlutterChain._();
 
-  static void capture<T>(
-    T callback(), {
+  static void capture<T>(T callback(), {
     void onError(error, Chain chain),
     bool simple = true,
   }) {
     runZoned(
-      () {
+          () {
         FlutterError.onError = (FlutterErrorDetails details) async {
           Zone.current.handleUncaughtError(details.exception, details.stack);
         };
@@ -52,8 +51,11 @@ class FlutterChain {
   }
 
   static void print(Object obj, {bool isShowTime = true}) {
-    assert(debugPrint(isShowTime
-        ? "${DateTime.now()}:  ${obj.toString()}"
-        : "${obj.toString()}"));
+    bool isDebug = false;
+    assert(isDebug = true);
+    if (isDebug)
+      debugPrint(isShowTime
+          ? "${DateTime.now()}:  ${obj.toString()}"
+          : "${obj.toString()}");
   }
 }
