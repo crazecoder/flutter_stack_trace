@@ -10,6 +10,7 @@ void main() => FlutterChain.capture(
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    FlutterChain.print("123");
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(

@@ -7,7 +7,7 @@ class FlutterChain {
 
   static void capture<T>(T callback(), {
     void onError(error, Chain chain),
-    bool simple = true,
+    bool simple: true,
   }) {
     runZoned(
           () {
@@ -17,20 +17,20 @@ class FlutterChain {
         callback();
       },
       onError: (_error, _stack) {
-        assert(_printError(_error, _stack, simple));
+        printError(_error, _stack, simple: simple);
       },
     );
   }
 
-  static _printError(_error, _stack, bool simple) {
-    debugPrint(_error.toString());
+  static printError(_error, _stack, {bool simple: true}) {
+    print(_error.toString(), isShowTime: false);
     String errorStr = "";
     if (simple) {
       errorStr = _parseFlutterStack(Trace.from(_stack));
     } else {
       errorStr = Trace.from(_stack).toString();
     }
-    if (errorStr.isNotEmpty) debugPrint(errorStr);
+    if (errorStr.isNotEmpty) print(errorStr, isShowTime: false);
   }
 
   static String _parseFlutterStack(Trace _trace) {
