@@ -76,11 +76,11 @@ I/flutter (28359): -------------------------------------------------------------
 ```dart
 import 'package:flutter_stack_trace/flutter_stack_trace.dart';
 
-//default simple mode
 void main() => FlutterChain.capture(
       () {
         runApp(MyApp());
       },
+      simple: false,//default true
     );
 
 //just print in debug mode

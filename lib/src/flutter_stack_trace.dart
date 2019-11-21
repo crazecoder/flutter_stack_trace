@@ -81,6 +81,9 @@ void debugLog(Object obj, {bool isShowTime = true, bool showLine = false}) {
       }
       debugPrint(line);
       logSlice.forEach((_log) {
+        if (_log.isEmpty) {
+          return;
+        }
         int gapLength = maxLength - _log.length;
         if (gapLength > 0) {
           String space = " ";
