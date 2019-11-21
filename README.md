@@ -58,6 +58,20 @@ I/flutter ( 3068): package:example/presenter/login_presenter.dart 19:12       Lo
 I/flutter ( 3068): package:example/ui/login_page.dart 135:31                  _LoginPageState.buildBody.<fn>
 ```
 
+### 1.0.0
+
+```
+I/flutter (28359): test
+I/flutter (28359): -----------
+I/flutter (28359): | oh no!  |
+I/flutter (28359): -----------
+I/flutter (28359): ---------------------------------------------------------------------------------
+I/flutter (28359): | package:example/main.dart 56:5                MyHomePage._runAsync            |
+I/flutter (28359): | package:example/main.dart 52:62               MyHomePage._scheduleAsync.<fn>  |
+I/flutter (28359): ---------------------------------------------------------------------------------
+
+```
+
 ### Example
 
 ```dart

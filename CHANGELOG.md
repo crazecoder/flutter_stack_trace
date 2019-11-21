@@ -1,3 +1,5 @@
-## [0.0.1] - TODO: Add release date.
-
-* TODO: Describe initial release.
+## 1.0.0
+* fix not print flutter framework exception 
+* add dividing line, let log print clearer
+## 0.1.5
+* add Simple Mode
