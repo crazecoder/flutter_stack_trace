@@ -61,7 +61,6 @@ I/flutter ( 3068): package:example/ui/login_page.dart 135:31                  _L
 ### 1.0.0
 
 ```
-I/flutter (28359): test
 I/flutter (28359): -----------
 I/flutter (28359): | oh no!  |
 I/flutter (28359): -----------
