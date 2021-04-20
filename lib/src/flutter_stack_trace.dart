@@ -7,34 +7,36 @@ import 'dart:async';
 class FlutterChain {
   FlutterChain._();
 
-  static void capture<T>(T callback(), {
+  static void capture<T>(
+    T callback(), {
     void onError(error, Chain chain),
     bool simple: true,
   }) {
-    FlutterError.onError = (FlutterErrorDetails details) async {
-      Zone.current.handleUncaughtError(details.exception, details.stack);
-    };
     Isolate.current.addErrorListener(RawReceivePort((dynamic pair) async {
       var isolateError = pair as List<dynamic>;
       var _error = isolateError.first;
       var _stackTrace = isolateError.last;
       Zone.current.handleUncaughtError(_error, _stackTrace);
     }).sendPort);
-    runZoned(
-          () {
+    runZonedGuarded(
+      () {
         FlutterError.onError = (FlutterErrorDetails details) async {
           Zone.current.handleUncaughtError(details.exception, details.stack);
         };
         callback();
       },
-      onError: (_error, _stack) {
+      (_error, _stack) {
         printError(_error, _stack, simple: simple);
       },
     );
+    FlutterError.onError = (FlutterErrorDetails details) async {
+      Zone.current.handleUncaughtError(details.exception, details.stack);
+    };
   }
 
   static printError(_error, _stack, {bool simple: true}) {
-    debugLog(_error.toString(), isShowTime: false, showLine: true);
+    debugLog(_error.toString(),
+        isShowTime: false, showLine: true, isDescription: true);
     String errorStr = "";
     if (simple) {
       errorStr = _parseFlutterStack(Trace.from(_stack));
@@ -65,38 +67,70 @@ class FlutterChain {
   }
 }
 
-void debugLog(Object obj, {bool isShowTime = true, bool showLine = false}) {
+void debugLog(Object obj,
+    {bool isShowTime = true,
+    bool showLine = false,
+    bool isDescription = false}) {
   bool isDebug = false;
   assert(isDebug = true);
+  const int maxLength = 100;
+
   if (isDebug) {
-    String log = isShowTime
-        ? "${DateTime.now()}:  ${obj.toString()}"
-        : "${obj.toString()}";
-    if (showLine) {
-      var logSlice = log.split("\n");
-      int maxLength = _getMaxLength(logSlice) + 3;
-      String line = "-";
-      for (int i = 0; i < maxLength + 1; i++) {
-        line = "$line-";
-      }
-      debugPrint(line);
-      logSlice.forEach((_log) {
-        if (_log.isEmpty) {
-          return;
-        }
-        int gapLength = maxLength - _log.length;
-        if (gapLength > 0) {
-          String space = " ";
-          for (int i = 0; i < gapLength - 3; i++) {
-            space = "$space ";
+    String slice = obj.toString();
+    if (isDescription) {
+      if (obj.toString().length > maxLength) {
+        List<String> objSlice = [];
+        for (int i = 0;
+            i <
+                (obj.toString().length % maxLength == 0
+                    ? obj.toString().length / maxLength
+                    : obj.toString().length / maxLength + 1);
+            i++) {
+          if (maxLength * i > obj.toString().length) {
+            break;
           }
-          debugPrint("| $_log$space |");
+          objSlice.add(obj.toString().substring(
+              maxLength * i,
+              maxLength * (i + 1) > obj.toString().length
+                  ? obj.toString().length
+                  : maxLength * (i + 1)));
         }
-      });
-      debugPrint(line);
-    } else {
-      debugPrint(log);
+        slice = "\n";
+        objSlice.forEach((element) {
+          slice += "$element\n";
+        });
+      }
     }
+    _print(slice, showLine: showLine, isShowTime: isShowTime);
+  }
+}
+
+_print(String content, {bool isShowTime = true, bool showLine = false}) {
+  String log = isShowTime ? "${DateTime.now()}:  $content" : "$content";
+  if (showLine) {
+    var logSlice = log.split("\n");
+    int maxLength = _getMaxLength(logSlice) + 3;
+    String line = "-";
+    for (int i = 0; i < maxLength + 1; i++) {
+      line = "$line-";
+    }
+    debugPrint(line);
+    logSlice.forEach((_log) {
+      if (_log.isEmpty) {
+        return;
+      }
+      int gapLength = maxLength - _log.length;
+      if (gapLength > 0) {
+        String space = " ";
+        for (int i = 0; i < gapLength - 3; i++) {
+          space = "$space ";
+        }
+        debugPrint("| $_log$space |");
+      }
+    });
+    debugPrint(line);
+  } else {
+    debugPrint(log);
   }
 }
 
