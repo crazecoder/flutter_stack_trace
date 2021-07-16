@@ -9,7 +9,7 @@ class FlutterChain {
 
   static void capture<T>(
     T callback(), {
-    void onError(error, Chain chain),
+    void onError(error, Chain chain)?,
     bool simple: true,
   }) {
     Isolate.current.addErrorListener(RawReceivePort((dynamic pair) async {
@@ -21,7 +21,7 @@ class FlutterChain {
     runZonedGuarded(
       () {
         FlutterError.onError = (FlutterErrorDetails details) async {
-          Zone.current.handleUncaughtError(details.exception, details.stack);
+          Zone.current.handleUncaughtError(details.exception, details.stack!);
         };
         callback();
       },
@@ -30,7 +30,7 @@ class FlutterChain {
       },
     );
     FlutterError.onError = (FlutterErrorDetails details) async {
-      Zone.current.handleUncaughtError(details.exception, details.stack);
+      Zone.current.handleUncaughtError(details.exception, details.stack!);
     };
   }
 
@@ -44,7 +44,8 @@ class FlutterChain {
       errorStr = Trace.from(_stack).toString();
     }
     if (errorStr.isNotEmpty)
-      debugLog(errorStr, isShowTime: false, showLine: true);
+      debugLog(errorStr,
+          isShowTime: false, showLine: true, isDescription: false);
   }
 
   static String _parseFlutterStack(Trace _trace) {
@@ -67,13 +68,39 @@ class FlutterChain {
   }
 }
 
+///
+/// print message when debug.
+///
+/// `maxLength` takes effect when `isDescription = true`, You can edit it based on your console width
+///
+/// `isDescription` means you're about to print a long text
+///
+/// debugLog(
+///   "1234567890",
+///   isDescription: true,
+///   maxLength: 1,
+/// );
+///  ------
+///  | 1  |
+///  | 2  |
+///  | 3  |
+///  | 4  |
+///  | 5  |
+///  | 6  |
+///  | 7  |
+///  | 8  |
+///  | 9  |
+///  | 0  |
+///  ------
+/// 
+
 void debugLog(Object obj,
-    {bool isShowTime = true,
-    bool showLine = false,
-    bool isDescription = false}) {
+    {bool isShowTime = false,
+    bool showLine = true,
+    int maxLength = 100,
+    bool isDescription = true}) {
   bool isDebug = false;
   assert(isDebug = true);
-  const int maxLength = 100;
 
   if (isDebug) {
     String slice = obj.toString();
