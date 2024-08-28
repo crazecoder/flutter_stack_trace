@@ -1,8 +1,9 @@
 import 'dart:isolate';
+import 'dart:async';
+import 'dart:developer';
 
 import 'package:flutter/foundation.dart';
 import 'package:stack_trace/stack_trace.dart';
-import 'dart:async';
 
 class FlutterChain {
   FlutterChain._();
@@ -10,7 +11,7 @@ class FlutterChain {
   static void capture<T>(
     T callback(), {
     void onError(error, Chain chain)?,
-    bool simple: true,
+    bool simple = true,
   }) {
     Isolate.current.addErrorListener(RawReceivePort((dynamic pair) async {
       var isolateError = pair as List<dynamic>;
@@ -92,11 +93,11 @@ class FlutterChain {
 ///  | 9  |
 ///  | 0  |
 ///  ------
-/// 
+///
 
-void debugLog(Object obj,
+void debugLog(dynamic obj,
     {bool isShowTime = false,
-    bool showLine = true,
+    bool? showLine = null,
     int maxLength = 100,
     bool isDescription = true}) {
   bool isDebug = false;
@@ -106,6 +107,11 @@ void debugLog(Object obj,
     String slice = obj.toString();
     if (isDescription) {
       if (obj.toString().length > maxLength) {
+        if (showLine == null) {
+          showLine = false;
+        } else {
+          showLine = true;
+        }
         List<String> objSlice = [];
         for (int i = 0;
             i <
@@ -128,7 +134,14 @@ void debugLog(Object obj,
         });
       }
     }
-    _print(slice, showLine: showLine, isShowTime: isShowTime);
+    _print(slice, showLine: showLine ?? true, isShowTime: isShowTime);
+  }
+}
+
+_debugPrint(dynamic msg, {String? tag}) {
+  const bool inProduction = bool.fromEnvironment("dart.vm.product");
+  if (!inProduction) {
+    log(msg ?? "null", name: tag ?? 'flutter log');
   }
 }
 
@@ -141,7 +154,7 @@ _print(String content, {bool isShowTime = true, bool showLine = false}) {
     for (int i = 0; i < maxLength + 1; i++) {
       line = "$line-";
     }
-    debugPrint(line);
+    _debugPrint(line);
     logSlice.forEach((_log) {
       if (_log.isEmpty) {
         return;
@@ -152,12 +165,12 @@ _print(String content, {bool isShowTime = true, bool showLine = false}) {
         for (int i = 0; i < gapLength - 3; i++) {
           space = "$space ";
         }
-        debugPrint("| $_log$space |");
+        _debugPrint("| $_log$space |");
       }
     });
-    debugPrint(line);
+    _debugPrint(line);
   } else {
-    debugPrint(log);
+    _debugPrint(log);
   }
 }
 
