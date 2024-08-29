@@ -12,6 +12,7 @@ class FlutterChain {
     T callback(), {
     void onError(error, Chain chain)?,
     bool simple = true,
+    int lineMaxLength = 100,
   }) {
     Isolate.current.addErrorListener(RawReceivePort((dynamic pair) async {
       var isolateError = pair as List<dynamic>;
@@ -22,12 +23,13 @@ class FlutterChain {
     runZonedGuarded(
       () {
         FlutterError.onError = (FlutterErrorDetails details) async {
-          Zone.current.handleUncaughtError(details.exception, details.stack!);
+          Zone.current.handleUncaughtError(
+              details.exception, details.stack ?? StackTrace.current);
         };
         callback();
       },
       (_error, _stack) {
-        printError(_error, _stack, simple: simple);
+        _printError(_error, _stack, simple: simple, maxLength: lineMaxLength);
       },
     );
     FlutterError.onError = (FlutterErrorDetails details) async {
@@ -35,7 +37,12 @@ class FlutterChain {
     };
   }
 
-  static printError(_error, _stack, {bool simple: true}) {
+  static _printError(
+    _error,
+    _stack, {
+    bool simple = true,
+    int maxLength = 100,
+  }) {
     debugLog(_error.toString(),
         isShowTime: false, showLine: true, isDescription: true);
     String errorStr = "";
@@ -46,7 +53,10 @@ class FlutterChain {
     }
     if (errorStr.isNotEmpty)
       debugLog(errorStr,
-          isShowTime: false, showLine: true, isDescription: false);
+          maxLength: maxLength,
+          isShowTime: false,
+          showLine: true,
+          isDescription: false);
   }
 
   static String _parseFlutterStack(Trace _trace) {
@@ -67,6 +77,12 @@ class FlutterChain {
     });
     return result;
   }
+}
+
+bool isDebug() {
+  bool isDebug = false;
+  assert(isDebug = true);
+  return isDebug;
 }
 
 ///
@@ -94,44 +110,44 @@ class FlutterChain {
 ///  | 0  |
 ///  ------
 ///
-
 void debugLog(dynamic obj,
     {bool isShowTime = false,
-    bool? showLine = null,
-    int maxLength = 100,
+    bool? showLine,
+    int? maxLength,
     bool isDescription = true}) {
-  bool isDebug = false;
-  assert(isDebug = true);
+  bool _isDebug = isDebug();
 
-  if (isDebug) {
+  if (_isDebug) {
     String slice = obj.toString();
     if (isDescription) {
-      if (obj.toString().length > maxLength) {
-        if (showLine == null) {
-          showLine = false;
-        } else {
-          showLine = true;
-        }
-        List<String> objSlice = [];
-        for (int i = 0;
-            i <
-                (obj.toString().length % maxLength == 0
-                    ? obj.toString().length / maxLength
-                    : obj.toString().length / maxLength + 1);
-            i++) {
-          if (maxLength * i > obj.toString().length) {
-            break;
+      if (maxLength != null) {
+        if (obj.toString().length > maxLength) {
+          if (showLine == null) {
+            showLine = false;
+          } else {
+            showLine = true;
           }
-          objSlice.add(obj.toString().substring(
-              maxLength * i,
-              maxLength * (i + 1) > obj.toString().length
-                  ? obj.toString().length
-                  : maxLength * (i + 1)));
+          List<String> objSlice = [];
+          for (int i = 0;
+              i <
+                  (obj.toString().length % maxLength == 0
+                      ? obj.toString().length / maxLength
+                      : obj.toString().length / maxLength + 1);
+              i++) {
+            if (maxLength * i > obj.toString().length) {
+              break;
+            }
+            objSlice.add(obj.toString().substring(
+                maxLength * i,
+                maxLength * (i + 1) > obj.toString().length
+                    ? obj.toString().length
+                    : maxLength * (i + 1)));
+          }
+          slice = "\n";
+          objSlice.forEach((element) {
+            slice += "$element\n";
+          });
         }
-        slice = "\n";
-        objSlice.forEach((element) {
-          slice += "$element\n";
-        });
       }
     }
     _print(slice, showLine: showLine ?? true, isShowTime: isShowTime);
