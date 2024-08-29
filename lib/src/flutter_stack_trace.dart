@@ -24,7 +24,7 @@ class FlutterChain {
       () {
         FlutterError.onError = (FlutterErrorDetails details) async {
           Zone.current.handleUncaughtError(
-              details.exception, details.stack ?? StackTrace.current);
+              details.exception, details.stack ?? StackTrace.empty);
         };
         callback();
       },
@@ -34,7 +34,7 @@ class FlutterChain {
     );
     FlutterError.onError = (FlutterErrorDetails details) async {
       Zone.current.handleUncaughtError(
-          details.exception, details.stack ?? StackTrace.current);
+          details.exception, details.stack ?? StackTrace.empty);
     };
   }
 
