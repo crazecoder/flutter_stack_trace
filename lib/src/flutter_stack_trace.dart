@@ -29,7 +29,7 @@ class FlutterChain {
         callback();
       },
       (_error, _stack) {
-        _printError(_error, _stack, simple: simple, maxLength: lineMaxLength);
+        printError(_error, _stack, simple: simple, maxLength: lineMaxLength);
       },
     );
     FlutterError.onError = (FlutterErrorDetails details) async {
@@ -38,7 +38,7 @@ class FlutterChain {
     };
   }
 
-  static _printError(
+  static printError(
     _error,
     _stack, {
     bool simple = true,
