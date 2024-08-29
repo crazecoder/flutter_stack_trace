@@ -33,7 +33,8 @@ class FlutterChain {
       },
     );
     FlutterError.onError = (FlutterErrorDetails details) async {
-      Zone.current.handleUncaughtError(details.exception, details.stack!);
+      Zone.current.handleUncaughtError(
+          details.exception, details.stack ?? StackTrace.current);
     };
   }
 
@@ -44,7 +45,10 @@ class FlutterChain {
     int maxLength = 100,
   }) {
     debugLog(_error.toString(),
-        isShowTime: false, showLine: true, isDescription: true);
+        maxLength: maxLength,
+        isShowTime: false,
+        showLine: true,
+        isDescription: true);
     String errorStr = "";
     if (simple) {
       errorStr = _parseFlutterStack(Trace.from(_stack));
